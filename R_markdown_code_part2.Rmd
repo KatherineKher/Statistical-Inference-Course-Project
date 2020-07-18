@@ -1,0 +1,61 @@
+---
+title: "Statistical Inference Course Project - Part2"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Overview
+
+The second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
+
+```{r cars}
+library(ggplot2)
+library(dplyr)
+```
+## Part 2: Basic Inferential Data Analysis Instructions
+### Load the ToothGrowth data and perform some basic exploratory data analyses
+
+``` {r toothGrowth_Data}
+data(ToothGrowth)
+```
+
+### Provide a basic summary of the data.
+
+``` {r toothGrowth_EDA}
+head(ToothGrowth)
+summary(ToothGrowth)
+str(ToothGrowth)
+
+# plot len & supp
+ggplot(data=ToothGrowth) + 
+  aes(x=supp, y=len)+
+  geom_boxplot(aes(fill=supp)) +
+  facet_grid(cols = vars(dose)) +
+  ggtitle("Length-Supplement Relation split by dose")
+
+```
+
+> From Figure above, mean seems to be equal for both supp only for dose=2.
+
+### Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+
+``` {r toothGrowth_CI}
+# create t test
+
+# perform t test between supp types where dose = 2
+t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)
+
+# perform t test between supp types where dose != 2
+t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)
+
+```
+
+### State your conclusions and the assumptions needed for your conclusions.
+
+If we consider Null Hypothesis (H0) to be; mean is almost equal per supp per dose
+
+1- We Fail to reject H0 where dose = 2, as t-value is very small and is equal to ```r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)$statistic ```
+
+2- We reject H0 where dose does not equal to 2, as t-value is large enough and is equal to ```r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)$statistic ```
