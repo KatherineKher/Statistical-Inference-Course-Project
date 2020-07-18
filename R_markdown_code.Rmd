@@ -1,0 +1,93 @@
+---
+title: "Statistical Inference Course Project"
+author: "KKher"
+date: "7/18/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Overview
+
+In this project you will investigate the exponential distribution in R and compare it with the Central Limit Theorem. The second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
+
+```{r cars}
+library(ggplot2)
+library(dplyr)
+```
+
+## Part 1: Simulation Exercise Instructions
+
+The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. 
+- Has mean = 1/lambda & standard deviation = 1/lambda. 
+- Set lambda = 0.2 
+- Investigate the distribution of averages of 40 exponentials. 
+- Note that you will need to do a 1000 simulations.
+
+```{r Exponential Simulation}
+lambda = 0.2
+
+# theoretical Mean & standard deviation
+actual_mean = 1/0.2
+actual_sd = 1/0.2
+
+# simulate 1000 
+sample_means = NULL
+for (i in 1 : 1000) sample_means = c(sample_means, mean(rexp(40, lambda)))
+ggplot() +
+  aes(sample_means) +
+  geom_histogram(fill="#69b3a2", color="#e9ecef", alpha=0.9) + 
+  ggtitle("Distribution of 1000 simulations of averages of 40 exponentials") +
+  geom_vline(xintercept = mean(sample_means), color="blue")
+```
+
+Actual Mean = ``` r actual_mean``` and the simulated mean = ``` r mean(sample_means)```
+
+Actual sd = ``` r actual_sd``` and the simulated mean = ``` r sd(sample_means)```
+
+
+## Part 2: Basic Inferential Data Analysis Instructions
+- Load the ToothGrowth data and perform some basic exploratory data analyses
+
+``` {r toothGrowth_Data}
+data(ToothGrowth)
+```
+
+- Provide a basic summary of the data.
+
+``` {r toothGrowth_EDA}
+head(ToothGrowth)
+summary(ToothGrowth)
+str(ToothGrowth)
+
+# plot len & supp
+ggplot(data=ToothGrowth) + 
+  aes(x=supp, y=len)+
+  geom_boxplot(aes(fill=supp)) +
+  facet_grid(cols = vars(dose)) +
+  ggtitle("Length-Supplement Relation split by dose")
+
+```
+
+From Figure above, mean seems to be equal for both supp only for dose=2.
+
+- Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+
+``` {r toothGrowth_CI}
+# create t test
+
+# perform t test between supp types where dose = 2
+t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)
+
+# perform t test between supp types where dose != 2
+t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)
+```
+
+- State your conclusions and the assumptions needed for your conclusions.
+
+If we consider Null Hypothesis (H0) to be mean for supp is the same for each dose
+
+1- We Fail to reject H0 where dose = 2, as t-value is very small and equal to ``` r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)$statistic ``` 
+1- We reject H0 where dose does not equal to 2, as t-value is large enough and equal to ``` r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)$statistic ```
