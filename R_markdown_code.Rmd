@@ -2,7 +2,9 @@
 title: "Statistical Inference Course Project"
 author: "KKher"
 date: "7/18/2020"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -43,19 +45,19 @@ ggplot() +
   geom_vline(xintercept = mean(sample_means), color="blue")
 ```
 
-Actual Mean = ``` r actual_mean``` and the simulated mean = ``` r mean(sample_means)```
+Actual Mean = ```r actual_mean``` and the simulated mean = ```r mean(sample_means)```
 
-Actual sd = ``` r actual_sd``` and the simulated mean = ``` r sd(sample_means)```
+Actual sd = ```r actual_sd``` and the simulated mean = ```r sd(sample_means)```
 
 
 ## Part 2: Basic Inferential Data Analysis Instructions
-- Load the ToothGrowth data and perform some basic exploratory data analyses
+### Load the ToothGrowth data and perform some basic exploratory data analyses
 
 ``` {r toothGrowth_Data}
 data(ToothGrowth)
 ```
 
-- Provide a basic summary of the data.
+### Provide a basic summary of the data.
 
 ``` {r toothGrowth_EDA}
 head(ToothGrowth)
@@ -71,9 +73,9 @@ ggplot(data=ToothGrowth) +
 
 ```
 
-From Figure above, mean seems to be equal for both supp only for dose=2.
+> From Figure above, mean seems to be equal for both supp only for dose=2.
 
-- Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+### Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
 
 ``` {r toothGrowth_CI}
 # create t test
@@ -83,11 +85,13 @@ t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowt
 
 # perform t test between supp types where dose != 2
 t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)
+
 ```
 
-- State your conclusions and the assumptions needed for your conclusions.
+### State your conclusions and the assumptions needed for your conclusions.
 
-If we consider Null Hypothesis (H0) to be mean for supp is the same for each dose
+If we consider Null Hypothesis (H0) to be; mean is almost equal per supp per dose
 
-1- We Fail to reject H0 where dose = 2, as t-value is very small and equal to ``` r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)$statistic ``` 
-1- We reject H0 where dose does not equal to 2, as t-value is large enough and equal to ``` r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)$statistic ```
+1- We Fail to reject H0 where dose = 2, as t-value is very small and is equal to ```r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose==2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose==2], paired = TRUE)$statistic ```
+
+2- We reject H0 where dose does not equal to 2, as t-value is large enough and is equal to ```r t.test(ToothGrowth$len[ToothGrowth$supp=="OJ" & ToothGrowth$dose!=2], ToothGrowth$len[ToothGrowth$supp=="VC" & ToothGrowth$dose!=2], paired = TRUE)$statistic ```
